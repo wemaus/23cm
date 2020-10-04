@@ -3,7 +3,7 @@
 *	Developer: Bas, PE1JPD
 *
 *	Module: vfo.c
-*	Last change: 02.10.20
+*	Last change: 04.10.20
 *
 *	Description: loop when in VFO-mode
 */
@@ -34,6 +34,8 @@ extern int selectedMemory;
 extern int lastSelectedMemory;
 extern int tick;
 extern int tx;
+
+extern int iInfo;													// wm
 
 char str[20];														// wm str[16];
 
@@ -230,7 +232,7 @@ int setSquelch()
 			int c = handleRotary();
 			if (c!=0) {
 				if (c>0) {
-					if (++squelchlevel>64) squelchlevel=64;;
+					if (++squelchlevel>64) squelchlevel = 64;
 				}
 				else {
 					if (--squelchlevel<0) squelchlevel = 0;
@@ -540,6 +542,80 @@ int setAdjustfreq()													// wm
 }
 
 
+void getInfo()														// wm
+{
+	#ifdef LCD_20x4	
+	lcdCursor(9,1);
+	#else
+	lcdCursor(6,1);
+	#endif
+	lcdStr("Push Button");
+	iInfo = 0;
+}
+
+
+int setInfo()														// wm
+{
+	for (;;) {
+		lcdCursor(0,1);
+				
+		if (iInfo==0)
+		{
+			#ifdef LCD_20x4	
+			sprintf(str, "23cm-NBFM-Trx  v%s", version);
+			#else
+			sprintf(str, "23cm-Trx   v%s", version);
+			#endif
+			lcdStr(str);
+			}
+			else if (iInfo==1)
+			{
+			#ifdef LCD_20x4	
+			lcdStr("      by PE1JPD     ");
+			#else
+			lcdStr("   by PE1JPD    ");
+			#endif
+			}
+			else if (iInfo==2)
+			{
+			#ifdef LCD_20x4	
+			lcdStr("  and improved by   ");
+			#else
+			lcdStr("and improved by ");
+			#endif
+			}
+			else if (iInfo==3)
+			{
+			#ifdef LCD_20x4	
+			lcdStr("       DG8WM        ");
+			#else
+			lcdStr("     DG8WM      ");
+			#endif
+			}
+
+		for (;;) {
+			// handle encoder
+			int c = handleRotary();
+			if (c!=0) {
+				if (c>0) {
+					if (++iInfo>3) iInfo = 3;
+				}
+				else {
+					if (--iInfo<0) iInfo = 0;
+				}
+				
+				break;
+			}
+
+			int push = getRotaryPush();
+			if (push) {
+				return push;
+			}
+		}
+	}
+}
+
+
 void scanMemory()
 {
 	lcdClear();
@@ -602,7 +678,7 @@ struct MenuStruct mainMenu[] = {
 
 
 #ifdef ADF4153														// wm
-#define MAXMENU 5
+#define MAXMENU 6
 struct MenuStruct mainMenu[] = {
 	{ "Squelch ", &getSquelch, &setSquelch},
 	{ "Step    ", &getStep, &setStep},
@@ -610,6 +686,7 @@ struct MenuStruct mainMenu[] = {
 	{ "CTCSS   ", &getCTCSS, &setCTCSS},
 	{ "Store   ", &getMemory, &setMemory},
 	{ "FrqAdj  ", &getAdjustfreq, &setAdjustfreq},
+	{ "Info    ", &getInfo, &setInfo},
 	//	{ "Spectrum scan ", 0, &Spectrum},
 };
 #endif
