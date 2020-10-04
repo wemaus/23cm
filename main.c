@@ -3,7 +3,7 @@
 *	Developer: Bas, PE1JPD
 *
 *	Module: main.c
-*	Last change: 03.10.20
+*	Last change: 04.10.20
 *
 *	Description: main loop
 */
@@ -43,7 +43,8 @@
  * 4.4	Double click PTT for 1750 Hz tone					20-08-20	wm
  * 4.5	Start Trx only in VFO or MEMORY Mode				25-08-20	wm
  * 4.51	Some cosmetics, new Headers...						02-10-20	wm
- * 4.52	New version numbering								03-10-20	wm
+ * 4.52	New version numbering								03-10-20	wm 
+ * 4.53 Version Info Menu											04-10-10	wm
  */
 
 
@@ -88,6 +89,8 @@ int tick;
 
 int tone;															// CTCSS-Tone
 long toneCount;														// var for Timer1
+
+int iInfo;															// wm
 
 #ifdef DECODER														// wm
 	volatile int8_t enc_delta;										// Drehgeberbewegung zwischen zwei Auslesungen im Hauptprogramm
