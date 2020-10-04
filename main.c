@@ -44,7 +44,7 @@
  * 4.5	Start Trx only in VFO or MEMORY Mode				25-08-20	wm
  * 4.51	Some cosmetics, new Headers...						02-10-20	wm
  * 4.52	New version numbering								03-10-20	wm 
- * 4.53 Info Menue											04-10-10	wm
+ * 4.53 Version Info Menu											04-10-10	wm
  */
 
 
@@ -97,17 +97,17 @@ int iInfo;															// wm
 #endif
 
 #ifdef DECODER														// wm
-	// Dekodertabelle für wackeligen Rastpunkt
+	// Dekodertabelle fÃ¼r wackeligen Rastpunkt
 	// Quelle: https://www.mikrocontroller.net/articles/Drehgeber
 	
-	// viertel Auflösung											// wm
+	// viertel AuflÃ¶sung											// wm
 	const int8_t table[16] PROGMEM = {0,0,-1,0,0,0,0,1,0,0,0,0,0,0,0,0};
 
-	// halbe Auflösung
+	// halbe AuflÃ¶sung
 	// const int8_t table[16] PROGMEM = {0,0,-1,0,0,0,0,1,1,0,0,0,0,-1,0,0};
 		
-	// Dekodertabelle für normale Drehgeber
-	// volle Auflösung
+	// Dekodertabelle fÃ¼r normale Drehgeber
+	// volle AuflÃ¶sung
 	// const int8_t table[16] PROGMEM = {0,1,-1,0,-1,0,0,1,1,0,0,-1,0,-1,1,0};
 
 	ISR( TIMER0_COMPA_vect )										// 1ms fuer manuelle Eingabe
