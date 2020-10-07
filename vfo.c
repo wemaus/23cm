@@ -736,8 +736,8 @@ struct MenuStruct mainMenu[] = {
 	{ "CTCSS   ", &getCTCSS, &setCTCSS},
 	{ "Store   ", &getMemory, &setMemory},
 	{ "FrqAdj  ", &getAdjustfreq, &setAdjustfreq},					// wm
-	{ "Info    ", &getInfo, &setInfo},								// wm
 	{ "raw RSSI", &getrawRSSI, &setrawRSSI},						// wm
+	{ "Info    ", &getInfo, &setInfo},								// wm
 	//	{ "Spectrum scan ", 0, &Spectrum},
 };
 #endif
