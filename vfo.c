@@ -3,7 +3,7 @@
 *	Developer: Bas, PE1JPD
 *
 *	Module: vfo.c
-*	Last change: 04.10.20
+*	Last change: 07.10.20
 *
 *	Description: loop when in VFO-mode
 */
@@ -36,6 +36,7 @@ extern int tick;
 extern int tx;
 
 extern int iInfo;													// wm
+extern int calibration;												// wm
 
 char str[20];														// wm str[16];
 
@@ -616,6 +617,55 @@ int setInfo()														// wm
 }
 
 
+void getrawRSSI()
+{
+	lcdCursor(9,1);
+	
+	if (calibration==FALSE) {
+		lcdStr("  Off");
+	}
+	else {
+		lcdStr("  On ");
+	}
+}
+
+
+int setrawRSSI()													// wm
+{
+	for (;;) {
+											
+		lcdCursor(9,1);		
+		
+		if (calibration==FALSE) {
+			lcdStr("> Off");
+		}
+		else {
+			lcdStr("> On ");
+		}
+		
+		for (;;) {
+			// handle encoder
+			int c = handleRotary();
+			if (c!=0) {
+				if (c>0) {
+					calibration = TRUE;
+				}
+				else {
+					calibration = FALSE;
+				}
+				
+				break;
+			}
+
+			int push = getRotaryPush();
+			if (push) {
+				return push;
+			}
+		}
+	}
+}
+
+
 void scanMemory()
 {
 	lcdClear();
@@ -678,15 +728,16 @@ struct MenuStruct mainMenu[] = {
 
 
 #ifdef ADF4153														// wm
-#define MAXMENU 6
+#define MAXMENU 7
 struct MenuStruct mainMenu[] = {
 	{ "Squelch ", &getSquelch, &setSquelch},
 	{ "Step    ", &getStep, &setStep},
 	{ "Shift   ", &getShift, &setShift},
 	{ "CTCSS   ", &getCTCSS, &setCTCSS},
 	{ "Store   ", &getMemory, &setMemory},
-	{ "FrqAdj  ", &getAdjustfreq, &setAdjustfreq},
-	{ "Info    ", &getInfo, &setInfo},
+	{ "FrqAdj  ", &getAdjustfreq, &setAdjustfreq},					// wm
+	{ "Info    ", &getInfo, &setInfo},								// wm
+	{ "raw RSSI", &getrawRSSI, &setrawRSSI},						// wm
 	//	{ "Spectrum scan ", 0, &Spectrum},
 };
 #endif
