@@ -3,7 +3,7 @@
 *	Developer: Bas, PE1JPD
 *
 *	Module: smeter.c
-*	Last change: 02.10.20
+*	Last change: 07.10.20
 *
 *	Description: S-meter and RSSI
 */
@@ -20,6 +20,7 @@
 extern int tx;
 extern int squelchlevel;
 extern int mode;
+extern int calibration;													// wm
 
 
 // define S-meter chars
@@ -119,22 +120,35 @@ void displaySmeter(int rssi)
 
 void displayRSSI(int rssi) 											// wm
 {
-	int s = rssi-44;												// wm, RSSIoff, "rssi-44" in dBm calibrated for original value
 	char str[20];
-	
-	if (s<0) s=0;													// wm
 	
 	lcdCursor(0, 2);
 	
-	if (s==0) {
-		lcdStr("RSSI:               ");
+	if (calibration==FALSE)														
+	{	
+		int s = rssi-44;											// wm, RSSIoff, "rssi-44" in dBm calibrated for original value
+	
+		if (s<0) s=0;												// wm
+	
+		if (s==0) {
+			lcdStr("RSSI:               ");
+		}
+		else
+		{															// Normal Mode
+			// RSSI[dBm] = s * m + c; m = 1,73; c = -98,35 calculated with spreadsheet (Numbers)
+			// Lin 1: m = 1,73 --> 173; c = -98,35 --> 9835
+			// Lin 2: m = 1,52 --> 152; c = -98,14 --> 9814
+			// all values*100 --> Integer
+		
+			s = 9814 - (152 * s);									
+		
+			sprintf(str, "RSSI: -%d.%d dBm", (int)(s/100), (int)(s%100));
+			lcdStr(str);
+		}
 	}
 	else
-	{
-		s = 9835 - (173 * s);										// all values*100 --> Integer
-		
-		sprintf(str, "RSSI: -%d.%d dBm", (int)(s/100), (int)(s%100));
-		lcdCursor(0,2);
+	{																// Calibrate Mode, RSSI raw
+		sprintf(str, "RSSI raw: %d", rssi);
 		lcdStr(str);
 	}
 }
