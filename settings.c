@@ -3,9 +3,37 @@
 *	Developer: Bas, PE1JPD
 *
 *	Module: settings.c
-*	Last change: 02.10.20
+*	Last change: 08.10.20
 *
 *	Description: All code to store and load settings to EEPROM.
+*/
+
+/*
+*	EEPROM Usage
+*
+*	Address		Type		Variable
+*	-----------------------------------------------------------------
+*	Global Settings:
+*	      0		int			MAGICNUMBER
+*		  2		int			squelchlevel
+*		  4		int			mode
+*		  6		int			lastSelectedMemory
+*		  8		int			Step
+*		 10		int			frqadj
+*		 12		int			para_m
+*		 14		int			para_c
+*
+*	Memory Settings for M0..M9 (address = 100 + memory*10):
+*	M0:
+*		100		long int	freq
+*		104		int			tone
+*		106		int			shift
+*	M1:
+*		110		long int	freq
+*		114		int			tone
+*		116		int			shift
+*	M2:
+*	...
 */
 
 
@@ -31,6 +59,9 @@ extern int frqadj;
 
 extern int tone;
 extern int lastSelectedMemory;
+
+extern int para_m;													// wm
+extern int para_c;													// wm
 
 
 // write default values in memories
@@ -86,6 +117,11 @@ void readGlobalSettings()
 			frqadj = eeprom_read_word((unsigned int *)address);
 			address += 2;
 		#endif
+		
+		para_m = eeprom_read_word((unsigned int *)address);			// wm parameter for linear regression
+		address += 2;
+		para_c = eeprom_read_word((unsigned int *)address);			// wm parameter for linear regression
+		address += 2;
 	}
 }
 
@@ -126,6 +162,16 @@ void writeGlobalSettings()
 			eeprom_write_word((unsigned int *)address, (int)frqadj);
 		address += 2;	
 	#endif
+
+	eeprom_word = eeprom_read_word((unsigned int *)address);		// wm
+	if (eeprom_word!=para_m)
+	eeprom_write_word((unsigned int *)address, (int)para_m);
+	address += 2;
+	
+	eeprom_word = eeprom_read_word((unsigned int *)address);		// wm
+	if (eeprom_word!=para_c)
+	eeprom_write_word((unsigned int *)address, (int)para_c);
+	address += 2;	
 }
 
 

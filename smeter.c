@@ -3,7 +3,7 @@
 *	Developer: Bas, PE1JPD
 *
 *	Module: smeter.c
-*	Last change: 07.10.20
+*	Last change: 08.10.20
 *
 *	Description: S-meter and RSSI
 */
@@ -20,15 +20,17 @@
 extern int tx;
 extern int squelchlevel;
 extern int mode;
-extern int calibration;													// wm
 
+extern int calibration;													// wm
+extern int para_m;														// wm
+extern int para_c;														// wm
 
 // define S-meter chars
 unsigned char smeterChars[4][8] = {										// wm, [3][8]
 	{0b00000,0b00000,0b10000,0b10000,0b10000,0b10000,0b00000,0b00000},
 	{0b00000,0b00000,0b10100,0b10100,0b10100,0b10100,0b00000,0b00000},
 	{0b00000,0b00000,0b10101,0b10101,0b10101,0b10101,0b00000,0b00000},
-	{0b00000,0b00000,0b00100,0b00100,0b00100,0b01110,0b00100,0b00000}	// wm
+	{0b00000,0b00000,0b00100,0b00100,0b00100,0b01110,0b00100,0b00000}	// wm little target
 };
 
 
@@ -140,7 +142,7 @@ void displayRSSI(int rssi) 											// wm
 			// Lin 2: m = 1,52 --> 152; c = -98,14 --> 9814
 			// all values*100 --> Integer
 		
-			s = 9814 - (152 * s);									
+			s = para_c - (para_m * s);								// s = 9814 - (152 * s);									
 		
 			sprintf(str, "RSSI: -%d.%d dBm", (int)(s/100), (int)(s%100));
 			lcdStr(str);
