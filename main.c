@@ -3,7 +3,7 @@
 *	Developer: Bas, PE1JPD
 *
 *	Module: main.c
-*	Last change: 07.10.20
+*	Last change: 09.10.20
 *
 *	Description: main loop
 */
@@ -95,8 +95,8 @@ long toneCount;														// var for Timer1
 int iInfo;															// wm
 
 int calibration = FALSE;											// wm
-int para_m = 152;													// wm Parameter m for linear regression
-int para_c = 9814;													// wm Parameter c for linear regression
+int para_m = 160;													// wm Parameter m for linear regression
+int para_c = 9927;													// wm Parameter c for linear regression
 
 #ifdef DECODER														// wm
 	volatile int8_t enc_delta;										// Drehgeberbewegung zwischen zwei Auslesungen im Hauptprogramm
