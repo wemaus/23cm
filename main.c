@@ -3,7 +3,7 @@
 *	Developer: Bas, PE1JPD
 *
 *	Module: main.c
-*	Last change: 07.10.20
+*	Last change: 09.10.20
 *
 *	Description: main loop
 */
@@ -46,6 +46,7 @@
  * 4.52	New version numbering								03-10-20	wm 
  * 4.53 Version Info Menu									04-10-20	wm
  * 4.54 RSSI raw Value for calibration						07-10-20	wm
+ * 4.55 RSSI calibration Menu								08-10-20	wm
  */
 
 
@@ -92,7 +93,10 @@ int tone;															// CTCSS-Tone
 long toneCount;														// var for Timer1
 
 int iInfo;															// wm
+
 int calibration = FALSE;											// wm
+int para_m = 160;													// wm Parameter m for linear regression
+int para_c = 9927;													// wm Parameter c for linear regression
 
 #ifdef DECODER														// wm
 	volatile int8_t enc_delta;										// Drehgeberbewegung zwischen zwei Auslesungen im Hauptprogramm

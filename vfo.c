@@ -3,7 +3,7 @@
 *	Developer: Bas, PE1JPD
 *
 *	Module: vfo.c
-*	Last change: 07.10.20
+*	Last change: 08.10.20
 *
 *	Description: loop when in VFO-mode
 */
@@ -37,6 +37,8 @@ extern int tx;
 
 extern int iInfo;													// wm
 extern int calibration;												// wm
+extern int para_m;													// wm
+extern int para_c;													// wm
 
 char str[20];														// wm str[16];
 
@@ -454,7 +456,7 @@ int setCTCSS()
 void getMemory()
 {
 	selectedMemory = lastSelectedMemory;
-	lcdCursor(9,1);
+	lcdCursor(8,1);
 	sprintf(str, "  M%d", selectedMemory);
 	lcdStr(str);
 }
@@ -465,7 +467,7 @@ int setMemory(int set)
 
 	for (;;) {
 
-		lcdCursor(9,1);
+		lcdCursor(8,1);
 		sprintf(str, "> M%d", selectedMemory);
 		lcdStr(str);
 
@@ -509,12 +511,7 @@ int setAdjustfreq()													// wm
 	for (;;) {
 
 		lcdCursor(7,1);
-		
-//		if (fa < 0)
-			sprintf(str, ">%4d KHz", fa);
-//		else
-//			sprintf(str, "> %3d KHz", fa);
-
+		sprintf(str, ">%4d KHz", fa);
 		lcdStr(str);
 
 		for (;;) {
@@ -532,14 +529,145 @@ int setAdjustfreq()													// wm
 
 			int push = getRotaryPush();
 			if (push) {
-				if (frqadj != fa) {
 					frqadj = fa;
 					writeGlobalSettings();
-				}
 				return push;
 			}
 		}
 	}	
+}
+
+
+void getrawRSSI()
+{
+	lcdCursor(9,1);
+	
+	if (calibration==FALSE) {
+		lcdStr("    off");
+	}
+	else {
+		lcdStr("    on ");
+	}
+}
+
+
+int setrawRSSI()													// wm
+{
+	for (;;) {
+		
+		lcdCursor(9,1);
+		
+		if (calibration==FALSE) {
+			lcdStr(">   off");
+		}
+		else {
+			lcdStr(">   on ");
+		}
+		
+		for (;;) {
+			// handle encoder
+			int c = handleRotary();
+			if (c!=0) {
+				if (c>0) {
+					calibration = TRUE;
+				}
+				else {
+					calibration = FALSE;
+				}
+				
+				break;
+			}
+
+			int push = getRotaryPush();
+			if (push) {
+				return push;
+			}
+		}
+	}
+}
+
+
+void getParam_m()													// wm
+{
+	lcdCursor(9,1);
+	sprintf(str, "    %3d", para_m);
+	lcdStr(str);
+}
+
+
+int setParam_m()													// wm
+{
+	int para = para_m;
+
+	for (;;) {
+
+		lcdCursor(9,1);
+		sprintf(str, ">   %3d", para);
+		lcdStr(str);
+
+		for (;;) {
+			// handle encoder
+			int c = handleRotary();
+			if (c!=0) {
+				if (c>0) {
+					if (++para>300) para = 300;
+				}
+				else {
+					if (--para<0) para = 0;
+				}
+				break;
+			}
+
+			int push = getRotaryPush();
+			if (push) {
+					para_m = para;
+					writeGlobalSettings();
+				return push;
+			}
+		}
+	}
+}
+
+
+void getParam_c()													// wm
+{
+	lcdCursor(9,1);
+	sprintf(str, "   %4d", para_c);
+	lcdStr(str);
+}
+
+
+int setParam_c()													// wm
+{
+	int para = para_c;
+
+	for (;;) {
+
+		lcdCursor(9,1);
+		sprintf(str, ">  %4d", para);
+		lcdStr(str);
+
+		for (;;) {
+			// handle encoder
+			int c = handleRotary();
+			if (c!=0) {
+				if (c>0) {
+					if (++para>9999) para = 9999;
+				}
+				else {
+					if (--para<0) para = 0;
+				}
+				break;
+			}
+
+			int push = getRotaryPush();
+			if (push) {
+					para_c = para;
+					writeGlobalSettings();
+				return push;
+			}
+		}
+	}
 }
 
 
@@ -617,55 +745,6 @@ int setInfo()														// wm
 }
 
 
-void getrawRSSI()
-{
-	lcdCursor(9,1);
-	
-	if (calibration==FALSE) {
-		lcdStr("  Off");
-	}
-	else {
-		lcdStr("  On ");
-	}
-}
-
-
-int setrawRSSI()													// wm
-{
-	for (;;) {
-											
-		lcdCursor(9,1);		
-		
-		if (calibration==FALSE) {
-			lcdStr("> Off");
-		}
-		else {
-			lcdStr("> On ");
-		}
-		
-		for (;;) {
-			// handle encoder
-			int c = handleRotary();
-			if (c!=0) {
-				if (c>0) {
-					calibration = TRUE;
-				}
-				else {
-					calibration = FALSE;
-				}
-				
-				break;
-			}
-
-			int push = getRotaryPush();
-			if (push) {
-				return push;
-			}
-		}
-	}
-}
-
-
 void scanMemory()
 {
 	lcdClear();
@@ -728,7 +807,7 @@ struct MenuStruct mainMenu[] = {
 
 
 #ifdef ADF4153														// wm
-#define MAXMENU 7
+#define MAXMENU 9													// wm
 struct MenuStruct mainMenu[] = {
 	{ "Squelch ", &getSquelch, &setSquelch},
 	{ "Step    ", &getStep, &setStep},
@@ -737,6 +816,8 @@ struct MenuStruct mainMenu[] = {
 	{ "Store   ", &getMemory, &setMemory},
 	{ "FrqAdj  ", &getAdjustfreq, &setAdjustfreq},					// wm
 	{ "raw RSSI", &getrawRSSI, &setrawRSSI},						// wm
+	{ "Param. m", &getParam_m, &setParam_m},						// wm
+	{ "Param. c", &getParam_c, &setParam_c},						// wm
 	{ "Info    ", &getInfo, &setInfo},								// wm
 	//	{ "Spectrum scan ", 0, &Spectrum},
 };

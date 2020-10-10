@@ -3,7 +3,7 @@
 *	Developer: Bas, PE1JPD
 *
 *	Module: 23nbfm.h
-*	Last change: 07.10.20
+*	Last change: 08.10.20
 *
 *	Description: Defines..., ATMEGA328 with default, factory fuse settings
 */
@@ -14,7 +14,7 @@
 
 #define BOARD2
 #define ADF4153
-#define version		"4.54"		// wm
+#define version		"4.55"		// wm
 #define LCD_20x4				// wm
 #define DECODER					// wm
 #define RSSIoff		40			// wm, RSSI-Offset, Bas 44 
