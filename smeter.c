@@ -3,7 +3,7 @@
 *	Developer: Bas, PE1JPD
 *
 *	Module: smeter.c
-*	Last change: 08.10.20
+*	Last change: 14.10.20
 *
 *	Description: S-meter and RSSI
 */
@@ -62,7 +62,7 @@ int readRSSI()
 	// if (rssi<0) rssi=0;											// wm moved
 	
 	// mute when tx or squelched
-	rssi_ = rssi-RSSIoff;											// wm
+	rssi_ = rssi-SQUELCHoff;										// wm
 	if (rssi_<0) rssi_ = 0;											// wm
 	if (tx || rssi_<squelchlevel || mode==SPECTRUM) {				// wm
 		sbi(PORTC, MUTE);
@@ -80,7 +80,7 @@ int readRSSI()
 
 void displaySmeter(int rssi) 
 {
-	short n = 16;
+	short n = 16;													// RSSI-Bar max. 16 chars
 	int s = rssi-RSSIoff;											// wm
 	
 	if (s<0) s=0;													// wm
@@ -128,9 +128,11 @@ void displayRSSI(int rssi) 											// wm
 	
 	if (calibration==FALSE)														
 	{	
-		int s = rssi-44;											// wm, RSSIoff, "rssi-44" in dBm calibrated for original value
+//		int s = rssi-44;											// wm, RSSIoff, "rssi-44" in dBm calibrated for original value
+		int s = rssi;
 	
-		if (s<0) s=0;												// wm
+//		if (s<0) s=0;												// wm
+		if (s<RSSIoff) s=0;											// wm
 	
 		if (s==0) {
 			lcdStr("RSSI:               ");
@@ -144,13 +146,13 @@ void displayRSSI(int rssi) 											// wm
 		
 			s = para_c - (para_m * s);								// s = 9814 - (152 * s);									
 		
-			sprintf(str, "RSSI: -%d.%d dBm", (int)(s/100), (int)(s%100));
+			sprintf(str, "RSSI:%4d.%2d dBm", (int)(s/100*-1), (int)(s%100));
 			lcdStr(str);
 		}
 	}
 	else
 	{																// Calibrate Mode, RSSI raw
-		sprintf(str, "RSSI raw: %d", rssi);
+		sprintf(str, "RSSI raw: %d", rssi);							// rssi = (1024-ADC)
 		lcdStr(str);
 	}
 }
