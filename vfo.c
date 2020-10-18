@@ -3,7 +3,7 @@
 *	Developer: Bas, PE1JPD
 *
 *	Module: vfo.c
-*	Last change: 14.10.20
+*	Last change: 18.10.20
 *
 *	Description: loop when in VFO-mode
 */
@@ -676,7 +676,7 @@ void getInfo()														// wm
 	#ifdef LCD_20x4	
 	lcdCursor(9,1);
 	#else
-	lcdCursor(6,1);
+	lcdCursor(5,1);
 	#endif
 	lcdStr("Push Button");
 	iInfo = 0;
