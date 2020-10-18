@@ -57,6 +57,7 @@ The first thing what I have done was to implement an LCD with 4 x 20 characters 
  * 4.54 RSSI raw Value for calibration						07-10-20	wm
  * 4.55 RSSI calibration Menu								08-10-20	wm
  * 4.56 Different Settings for RSSI and Squelch				14-10-20	wm
+ * 4.57 Display raw RSSI and RSSI on LCD 2x16				18-10-20	wm
  
  
  '#define LCD_20x4' delete this for 2-line LCD in 23nbfm.h
