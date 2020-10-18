@@ -133,7 +133,11 @@ void displayRSSI(int rssi, int x, int y) 							// wm
 		if (s<RSSIoff) s=0;											// wm
 	
 		if (s==0) {
-			lcdStr("RSSI:               ");
+			#ifdef LCD_20x4	
+				lcdStr("RSSI:               ");
+			#else
+				lcdStr("RSSI:           ");
+			#endif
 		}
 		else
 		{															// Normal Mode
@@ -149,7 +153,7 @@ void displayRSSI(int rssi, int x, int y) 							// wm
 		}
 	}
 	else
-	{																// Calibrate Mode, RSSI raw
+	{																// Calibrate Mode, raw RSSI
 		sprintf(str, "RSSI raw: %d", rssi);							// rssi = (1024-ADC)
 		lcdStr(str);
 	}

@@ -341,10 +341,12 @@ int TX_ok()												// wm
 	int s = 0;
 	
 	#ifdef LCD_20x4										// wm Clear RSSI
-		displayRSSI(s);
+		displayRSSI(s, 0, 2);
+		displaySmeter(s, 0, 3);							// Clear S-Meter
+	#else
+		displaySmeter(s, 0, 1);							// Clear S-Meter
 	#endif
 	
-	displaySmeter(s);									// Clear S-Meter
 	// sequencer tx on
 	switch_tx_on();
 	// force update pll
@@ -414,7 +416,7 @@ int rxtx()
 			}
 			else
 			{
-				// display alternate RSSI and S_Meter
+				// display alternate RSSI and S-Meter
 				if (tick > 125)										// ~ 1000 ms
 				{
 					displayRSSI(s, 0, 1);							// RSSI
