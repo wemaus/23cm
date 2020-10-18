@@ -148,7 +148,7 @@ void displayRSSI(int rssi, int x, int y) 							// wm
 		
 			s = para_c - (para_m * s);								// s = 9814 - (152 * s);									
 		
-			sprintf(str, "RSSI:%4d.%2d dBm", (int)(s/100*-1), (int)(s%100));
+			sprintf(str, "RSSI:%4d.%02d dBm", (int)(s/100*-1), (int)(s%100));
 			lcdStr(str);
 		}
 	}
