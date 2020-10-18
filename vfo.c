@@ -3,7 +3,7 @@
 *	Developer: Bas, PE1JPD
 *
 *	Module: vfo.c
-*	Last change: 08.10.20
+*	Last change: 14.10.20
 *
 *	Description: loop when in VFO-mode
 */
@@ -632,7 +632,7 @@ int setParam_m()													// wm
 void getParam_c()													// wm
 {
 	lcdCursor(9,1);
-	sprintf(str, "   %4d", para_c);
+	sprintf(str, "  %5d", para_c);
 	lcdStr(str);
 }
 
@@ -644,7 +644,7 @@ int setParam_c()													// wm
 	for (;;) {
 
 		lcdCursor(9,1);
-		sprintf(str, ">  %4d", para);
+		sprintf(str, "> %5d", para);
 		lcdStr(str);
 
 		for (;;) {
@@ -652,7 +652,7 @@ int setParam_c()													// wm
 			int c = handleRotary();
 			if (c!=0) {
 				if (c>0) {
-					if (++para>9999) para = 9999;
+					if (++para>25000) para = 25000;
 				}
 				else {
 					if (--para<0) para = 0;
