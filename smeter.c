@@ -3,7 +3,7 @@
 *	Developer: Bas, PE1JPD
 *
 *	Module: smeter.c
-*	Last change: 14.10.20
+*	Last change: 18.10.20
 *
 *	Description: S-meter and RSSI
 */
@@ -78,20 +78,18 @@ int readRSSI()
 }
 
 
-void displaySmeter(int rssi) 
+void displaySmeter(int rssi, int x, int y) 
 {
 	short n = 16;													// RSSI-Bar max. 16 chars
 	int s = rssi-RSSIoff;											// wm
 	
 	if (s<0) s=0;													// wm
 
+	lcdCursor(x, y);												// wm
+
 	#ifdef LCD_20x4													// wm
 		// goto fourth line on lcd
-		lcdCursor(0,3);
 		lcdStr("S-M:");
-	#else
-		// goto second line on lcd
-		lcdCursor(0,1);
 	#endif
 
 	// chars in the full bar are 3 vertical lines
@@ -120,11 +118,11 @@ void displaySmeter(int rssi)
 }
 
 
-void displayRSSI(int rssi) 											// wm
+void displayRSSI(int rssi, int x, int y) 							// wm
 {
 	char str[20];
 	
-	lcdCursor(0, 2);
+	lcdCursor(x, y);
 	
 	if (calibration==FALSE)														
 	{	
@@ -135,7 +133,11 @@ void displayRSSI(int rssi) 											// wm
 		if (s<RSSIoff) s=0;											// wm
 	
 		if (s==0) {
-			lcdStr("RSSI:               ");
+			#ifdef LCD_20x4	
+				lcdStr("RSSI:               ");
+			#else
+				lcdStr("RSSI:           ");
+			#endif
 		}
 		else
 		{															// Normal Mode
@@ -146,12 +148,12 @@ void displayRSSI(int rssi) 											// wm
 		
 			s = para_c - (para_m * s);								// s = 9814 - (152 * s);									
 		
-			sprintf(str, "RSSI:%4d.%2d dBm", (int)(s/100*-1), (int)(s%100));
+			sprintf(str, "RSSI:%4d.%02d dBm", (int)(s/100*-1), (int)(s%100));
 			lcdStr(str);
 		}
 	}
 	else
-	{																// Calibrate Mode, RSSI raw
+	{																// Calibrate Mode, raw RSSI
 		sprintf(str, "RSSI raw: %d", rssi);							// rssi = (1024-ADC)
 		lcdStr(str);
 	}

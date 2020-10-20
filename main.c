@@ -3,7 +3,7 @@
 *	Developer: Bas, PE1JPD
 *
 *	Module: main.c
-*	Last change: 14.10.20
+*	Last change: 18.10.20
 *
 *	Description: main loop
 */
@@ -48,6 +48,7 @@
  * 4.54 RSSI raw Values for calibration						07-10-20	wm
  * 4.55 RSSI calibration Menu								08-10-20	wm
  * 4.56 Different Settings for RSSI and Squelch				14-10-20	wm
+ * 4.57 Display raw RSSI and RSSI on LCD 2x16				18-10-20	wm
  */
 
 
@@ -340,10 +341,12 @@ int TX_ok()												// wm
 	int s = 0;
 	
 	#ifdef LCD_20x4										// wm Clear RSSI
-		displayRSSI(s);
+		displayRSSI(s, 0, 2);
+		displaySmeter(s, 0, 3);							// Clear S-Meter
+	#else
+		displaySmeter(s, 0, 1);							// Clear S-Meter
 	#endif
 	
-	displaySmeter(s);									// Clear S-Meter
 	// sequencer tx on
 	switch_tx_on();
 	// force update pll
@@ -404,10 +407,29 @@ int rxtx()
 		s = readRSSI();
 		
 		#ifdef LCD_20x4												// wm
-			displayRSSI(s);
+			displayRSSI(s, 0, 2);
+			displaySmeter(s, 0, 3);		
+		#else
+			if (calibration==TRUE)
+			{
+				displayRSSI(s, 0, 1);								// raw RSSI
+			}
+			else
+			{
+				// display alternate RSSI and S-Meter
+				if (tick > 125)										// ~ 1000 ms
+				{
+					displayRSSI(s, 0, 1);							// RSSI
+					if (tick > 250)
+						tick = 0;
+				}
+				else 
+				{
+					displaySmeter(s, 0, 1);							// S-Meter
+				}
+			}						
 		#endif
 		
-		displaySmeter(s);
 
 		// switch from rx to tx?
 		if (!(c & (1<<PTT)))								 			// PTT low switch Tx on 
